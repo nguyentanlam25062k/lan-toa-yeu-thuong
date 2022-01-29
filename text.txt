@@ -1,0 +1,89 @@
+	WEB BÁN HÀNG LARAVEL
+
+I. Chức năng trang web: 
+Người dùng
+    - Đăng nhập (google, facebook)
+    - Đăng kí
+    - Quên mật khẩu
+    - Slider + Tab
+    - Xem danh mục sản phẩm
+    - Breadcrumb
+    - Tìm kiếm sản phẩm
+    - Hiển thị sản phẩm
+    - Bình luận sản phẩm (thêm, sửa, xóa)
+    - Đánh giá sản phẩm (user đánh giá và hiển thị số sao trung bình của sp)
+    - Xem chi tiết sản phẩm (gallery)
+    - Lọc sản phẩm
+    - Phân trang sản phẩm
+    - format tiền tệ
+    - Chia sẻ sản phẩm lên facebook
+    - Giỏ hàng (Xem giỏ hàng, update giỏ hàng)
+    - Sử dụng mã giảm giá (mã giảm giá được gửi qua gmail sau khi mua hàng, hsd: 30 ngày kể từ ngày được gửi)
+    - Phí vận chuyển
+    - Thanh toán(cod, chuyển khoản)
+    - Xuất hóa đơn(PDF)
+    - Xác nhận gmail đặt hàng
+    - Xem thông tin liên hệ
+    - Liên hệ với shop qua zalo, facebook
+    - Liện hệ với shop qua gmail
+    - Đăng kí gmail để nhận ưu đãi
+    - Xem viết(số lượt xem, hiển thị thời gian đọc)
+    - Tìm kiếm bài viết
+    - Mục lục bài viết
+    - Lỗi 404, 500
+Admin
+    - Thêm, sửa, xóa, phân trang, tìm kiếm user
+    - Thêm, sửa, xóa, phân trang, tìm kiếm danh mục sản phẩm (có danh mục con)
+    - Thêm, sửa, xóa, phân trang, tìm kiếm sản phẩm (gallery)
+    - Thêm, sửa, xóa, phân trang, tìm kiếm thương hiệu (gallery)
+    - Thêm, sửa, xóa, phân trang, tìm kiếm mã giảm giá 
+    - Thêm, sửa, xóa, phân trang, tìm kiếm danh mục bài viết (có danh mục con)
+    - Thêm, sửa, xóa, phân trang, tìm kiếm bài viết
+    - Thêm, sửa, xóa, phân trang, tìm kiếm thông tin liên hệ
+    - Quản lí đơn hàng
+    - Quản lí số lượng tồn kho
+    - Quản lí banner
+    - Gửi mail nhận ưu đãi
+    - Nhập xuất data bằng excel
+    - Thống kê doanh số, lợi nhuận theo thời gian
+    - Thống kê truy cập theo thời gian (đang online, tổng truy cập)
+    - Thống kê sản phẩm, bài viết xem nhiều
+    - Thống kê sản phẩm mua nhiều, mua ít
+    - Thống kê số lượng user
+    - Xuất data ra file excel
+II. Công nghệ sử dụng:
+Backend
+    - Nodejs
+    - Express
+    - Sequelize Sql
+    - Helmet
+    - Morgan
+    - CORS
+    - Dotenv
+    - Nodemon
+    - Bcrypt
+    - Body parser
+    - Node mailer
+    - Lodash
+Frontend
+    - Reactjs
+    - Redux
+    - Redux toolkit
+    - React router
+    - React hook form
+    - React select
+    - React slick
+    - React toastify
+    - React icon
+    - React flatpickr
+    - React markdown
+    - React image light box
+    - React custom scroll bar
+    - Axios
+    - Moment
+    - React number format
+    - Material UI
+    - Lodash
+III. Thiết kế
+    - Router - Controller - Service - Model
+

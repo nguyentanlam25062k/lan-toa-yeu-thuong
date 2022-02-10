@@ -1,0 +1,20 @@
+.collapse {
+  width: 270px;
+  overflow: hidden;
+  &-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    background-color: #ccc;
+  }
+  &-toggle {
+    transition: all .25s;
+    &.active {
+      transform: rotate(90deg);
+    }
+  }
+  &-content {
+    transition: all .25s;
+  }
+}

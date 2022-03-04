@@ -16,13 +16,13 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Product_Extra_Info.init({
-    weight: DataTypes.STRING,
-    size: DataTypes.STRING,
-    volume: DataTypes.STRING,
+    weight: DataTypes.INTEGER,
+    size: DataTypes.INTEGER,
+    volume: DataTypes.INTEGER,
     ingredient: DataTypes.STRING,
-    expiry: DataTypes.STRING,
-    productId: DataTypes.INTEGER,
-    location: DataTypes.INTEGER
+    expiry: DataTypes.INTEGER,
+    location: DataTypes.INTEGER,
+    productId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Product_Extra_Info',

@@ -10,19 +10,19 @@ module.exports = {
       },
 
       weight: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       size: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       volume: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       ingredient: {
         type: Sequelize.STRING
       },
       expiry: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       productId: {
         type: Sequelize.INTEGER

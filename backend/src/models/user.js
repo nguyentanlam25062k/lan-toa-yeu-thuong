@@ -12,17 +12,23 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasOne(models.Cart, {foreignKey: 'userId'});
+
     }
   }
 
   User.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     role: DataTypes.STRING,
     gender: DataTypes.STRING,
-    userExtraInfoId: DataTypes.INTEGER,
+    phone: DataTypes.STRING,
+    provinceId: DataTypes.STRING,
+    districtId: DataTypes.STRING,
+    wardId: DataTypes.STRING,
+    imageId: DataTypes.STRING,
+    imageUrl: DataTypes.STRING,
     cartId: DataTypes.INTEGER
   }, {
     sequelize,

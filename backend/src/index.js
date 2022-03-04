@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
+
 import config from "./config/index.config";
 
 import connectDB from './config/connectDB.js';
@@ -15,6 +16,7 @@ const app = express();
 dotenv.config();
 
 connectDB();
+
 
 app.use(morgan('tiny'));
 app.use(cors());

@@ -8,10 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
-        type: Sequelize.STRING
-      },
-      lastName: {
+      name: {
         type: Sequelize.STRING
       },
       email: {
@@ -26,8 +23,23 @@ module.exports = {
       gender: {
         type: Sequelize.STRING
       },
-      userExtraInfoId: {
-        type: Sequelize.INTEGER
+      phone: {
+        type: Sequelize.STRING
+      },
+      provinceId: {
+        type: Sequelize.STRING
+      },
+      districtId: {
+        type: Sequelize.STRING
+      },
+      wardId: {
+        type: Sequelize.STRING
+      },
+      imageId: {
+        type: Sequelize.STRING
+      },
+      imageUrl: {
+        type: Sequelize.STRING
       },
       cartId: {
         type: Sequelize.INTEGER

@@ -1,25 +1,35 @@
-import userService from '../services/user.service';
-import {createAccessToken, createRefreshToken} from "../helpers/index.helper";
-import config from "../config/index.config";
 import jwt from 'jsonwebtoken';
+import userService from '../services/user.service';
+import config from "../config/index.config";
+import {createAccessToken, createRefreshToken} from "../helpers/index.helper";
+
 const userController = {};
+
+userController.user = async (req, res) => {
+  try {
+    const data = await userService.user(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
 
 userController.createNewUser = async (req, res) => {
   try {
     let dataUser;
     const data = await userService.createNewUser(req.body);
-
+    console.log('data controller', data);
     if (data.code === 0) {
-      const {data: infoUser} = data;
-      const accessToken = await createAccessToken(infoUser);
-      const refreshToken = await createRefreshToken(infoUser);
+      const {body} = data;
+      const accessToken = await createAccessToken(body);
+      const refreshToken = await createRefreshToken(body);
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         maxAge: config.COOKIE_LIFE
       });
 
-      dataUser = {...data, data: {accessToken}};
+      dataUser = {...data, body: {accessToken}};
     } else {
       dataUser = {...data};
     }
@@ -35,16 +45,16 @@ userController.login = async (req, res) => {
     const data = await userService.login(req.body);
 
     if (data.code === 0) {
-      const {data: infoUser} = data;
-      const accessToken = await createAccessToken(infoUser);
-      const refreshToken = await createRefreshToken(infoUser);
+      const {body} = data;
+      const accessToken = await createAccessToken(body);
+      const refreshToken = await createRefreshToken(body);
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         maxAge: config.COOKIE_LIFE
       });
-      console.log(req.cookies.refreshToken);
-      dataUser = {...data, data: {accessToken}};
+
+      dataUser = {...data, body: {accessToken}};
     } else {
       dataUser = {...data};
     }
@@ -81,7 +91,7 @@ userController.refreshToken = async (req, res) => {
         data = {
           code: 0,
           msg: "Refresh token success !",
-          data: {
+          body: {
             accessToken: accessToken
           }
         }
@@ -92,11 +102,39 @@ userController.refreshToken = async (req, res) => {
         msg: "Refresh token doesn't exist, Pleas register or login !",
       }
     }
-    console.log({data});
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json(error);
   }
 }
+
+userController.getUser = async (req, res) => {
+  try {
+    const data = await userService.getUser(req.query);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+userController.updateUser = async (req, res) => {
+  try {
+    const data = await userService.updateUser(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+userController.deleteUser = async (req, res) => {
+  try {
+    const data = await userService.deleteUser(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+
 
 export default userController

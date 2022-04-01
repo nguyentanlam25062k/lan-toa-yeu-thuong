@@ -1,11 +1,59 @@
 .user-manage-feature {
-  display: flex;
+  display        : flex;
   justify-content: space-between;
-  margin-bottom: 15px;
-  > .select {
-    width: 120px;
+  margin-bottom  : 15px;
+
+
+  >.left {
+    display: flex;
+
+    > :not(:last-child) {
+      margin-right: 10px;
+    }
+
+    >.select {
+      width: 120px;
+    }
+
+    .button {
+      display            : flex;
+      align-items        : center;
+      // background-color: #bec8c8;
+      background-color   : #fff;
+      padding            : 0 10px;
+      transition         : all .2s;
+
+      &:hover {
+        border-color: #40a9ff;
+      }
+
+      &.refresh .button-icon {
+        background-color: #1890ff;
+      }
+
+      &.unselect .button-icon {
+        background-color: #ff4d4f;
+      }
+
+      &-icon {
+        border-radius  : 100%;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+        padding        : 2px;
+        margin-right   : 4px;
+
+        svg {
+          color: #fff;
+        }
+      }
+
+    }
   }
-  > .input-search {
+
+
+
+  >.input-search {
     max-width: 300px;
   }
 }

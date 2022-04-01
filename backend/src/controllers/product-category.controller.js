@@ -1,24 +1,33 @@
-import productCategoryService from '../services/product-category.service';
+import productCategoryService from "../services/product-category.service";
 import config from "../config/index.config";
 
 const productCategoryController = {};
 
-productCategoryController.productCategory = async (req, res) => {
+productCategoryController.getProductCategory = async (req, res) => {
   try {
-    const data = await productCategoryService.productCategory(req.body);
+    const data = await productCategoryService.getProductCategory();
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json(error);
   }
-}
+};
 
-productCategoryController.createCategory = async (req, res) => {
+productCategoryController.createProductCategory = async (req, res) => {
   try {
-    const data = await productCategoryService.createCategory(req.body);
+    const data = await productCategoryService.createProductCategory(req.body);
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json(error);
   }
-}
+};
 
-export default productCategoryController
+productCategoryController.updateProductCategory = async (req, res) => {
+  try {
+    const data = await productCategoryService.updateProductCategory(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export default productCategoryController;

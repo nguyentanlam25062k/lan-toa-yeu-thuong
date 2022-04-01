@@ -1,34 +1,27 @@
-import './UserManagePagination.scss';
-import PropTypes from 'prop-types';
-import {BsSearch, BsFilter} from "react-icons/bs";
-import {CgChevronDoubleLeft, CgChevronDoubleRight} from "react-icons/cg";
-import {useSelector} from "react-redux";
-import {Pagination} from "antd";
+import "./UserManagePagination.scss";
+import PropTypes from "prop-types";
+import { BsSearch, BsFilter } from "react-icons/bs";
+import { CgChevronDoubleLeft, CgChevronDoubleRight } from "react-icons/cg";
+import { useSelector } from "react-redux";
+import { Pagination } from "antd";
 
 function UserManagePagination(props) {
-  const {pagination} = useSelector(state => state.user)
-  const {page, limit, totalRows} = pagination;
-  const {handlePageChange} = props;
+  const { query, userList, onPageChange } = props;
 
-  const totalPages = Math.ceil(totalRows / limit);
-  const onPageChange = (page, pageSize) => {
-    console.log({page, pageSize});
-  }
-
-  const onShowSizeChange = (current, size) => {
-    console.log({current, size})
-  }
-
+  const { totalRow } = userList;
+  const { page, limit } = query;
+  // const totalPages = Math.ceil(totalRow / limit);
 
   return (
     <div className="user-manage-pagination">
       <Pagination
-        total={85}
+        current={page}
+        total={totalRow}
         showSizeChanger
         showQuickJumper
-        showTotal={total => `Total ${total} items`}
-        onChange={onPageChange}
-        // onShowSizeChange={onShowSizeChange}
+        pageSizeOptions={[2, 5, 10, 20, 50]}
+        showTotal={(total) => `Hệ thống có ${totalRow} người dùng`}
+        onChange={(page, pageSize) => onPageChange(page, pageSize)}
       />
     </div>
   );
@@ -37,10 +30,10 @@ function UserManagePagination(props) {
 UserManagePagination.propTypes = {
   // pagination: PropTypes.object.isRequired,
   handlePageChange: PropTypes.func
-}
+};
 
 UserManagePagination.defaultProps = {
   handlePageChange: null
-}
+};
 
 export default UserManagePagination;

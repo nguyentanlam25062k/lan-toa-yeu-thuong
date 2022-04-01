@@ -1,4 +1,4 @@
-import userExtraInfoSchema from "../validators/user-extra-info.validator";
+import userExtraInfoSchema from "../schemas/user-extra-info.schema";
 import db from '../models/index';
 
 const userService = {};

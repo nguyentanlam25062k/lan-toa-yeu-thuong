@@ -2,7 +2,9 @@ import {useController } from "react-hook-form";
 import PropTypes from "prop-types";
 import React from "react";
 import Select from "react-select";
-
+import addressAction from "../../../redux/actions/address.action";
+import {useDispatch} from "react-redux";
+import _ from "lodash";
 SelectField.propTypes = {
   control: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -23,9 +25,9 @@ SelectField.defaultProps = {
 }
 
 function SelectField (props) {
-  const {control, errors, options, label, name, placeholder, disabled, errorInvisible} = props;
+  const {control, errors, getValues, options, label, name, placeholder, disabled, invisibleError, onChangeAddress} = props;
   const {field} = useController({control, name});
-  const isError = errors[name] || errorInvisible;
+  // const nameError = errors[name] ?  name : invisibleError;
   return (
     <div className="form-group">
       {label && <label htmlFor={name} >{label}</label>}
@@ -40,15 +42,19 @@ function SelectField (props) {
         options={options}
         value={options.find(c => c.value === field.value)}
         onChange={option => {
-          return field.onChange({
+          field.onChange({
             target: {
               value: option.value,
               name: name
             }
           })
+          onChangeAddress(name);
         }}
       />
-      <div className="error-message" style={{opacity: 0}}>{errors[isError]?.message}</div>
+      {
+        errors[name] ? <div className="error-message" style={{opacity: 1}}>{errors[name]?.message}</div>
+          : <div className="error-message" style={{opacity: 0}}>{errors[invisibleError]?.message}</div>
+      }
 
     </div>
   )

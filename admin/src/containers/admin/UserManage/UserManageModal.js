@@ -1,187 +1,193 @@
-import {Modal} from 'antd';
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {toast} from "react-toastify";
-import uploadApi from "../../../api/upload.api";
-import userApi from "../../../api/user.api";
-import crudConstant from "../../../constants/crud.constant";
+import { Modal } from "antd";
+import React from "react";
+// import userApi from "../../../api/user.api";
+import { UPDATE, CREATE } from "../../../constants/index.constant";
 import CheckboxField from "../../../custom/fields/CheckboxField/CheckboxField";
-import UploadImageField from "../../../custom/fields/UploadImageField/UploadImageField";
-import addressAction from "../../../redux/actions/address.action";
 import InputField from "../../../custom/fields/InputField/InputField";
 import SelectField from "../../../custom/fields/SelectField/SelectField";
-import utils from "../../../utils";
-import './UserManageModal.scss'
+import UploadImageField from "../../../custom/fields/UploadImageField/UploadImageField";
+import { toast } from "react-toastify";
+import "./UserManageModal.scss";
 
+import { userApi } from "../../../api/index.api";
 function UserManageModal(props) {
   const {
-    handleCancel,
-    modal: {isVisible, action},
-    reactHookForm: {handleSubmit, errors, control},
-    // userInfo: {provinceId},
-    handleAddressSelectChange,
-    handleUploadImage,
-    handleDestroyImage,
-    image
+    modal,
+    allCode,
+    address,
+    loadImage,
+    onCancel,
+    onUploadImage,
+    onDestroyImage,
+    onChangeAddress,
+    onSubmitForm,
+    getUserList,
+    userList,
+    reactHookForm: { handleSubmit, watch, errors, control, getValues }
   } = props;
 
-  const {provinceList, districtList, wardList} = useSelector(state => state?.address);
-  const {roleList, genderList} = useSelector(state => state?.allCode);
-
-
-
-
-
+  const { isOpen, action } = modal;
+  const { provinceList, districtList, wardList } = address;
+  const disabled = action === UPDATE;
+  const isActionCreate = action === CREATE;
 
   const handleSubmitForm = async (userInfo) => {
-    console.log('errors', errors)
-    console.log('userInfo', userInfo);
-    // try {
-    //   const dataUser = {
-    //     ...userInfo,
-    //     imageId: image.imageId,
-    //     imageUrl: image.imageUrl
-    //   }
-    //   let res;
-    //   if (action === crudConstant.CREATE) {
-    //     res = await userApi.createUser(dataUser);
-    //   } else {
-    //     res = await userApi.updateUser(dataUser);
-    //   }
-    //
-    //   if (res?.code === 0) {
-    //     toast.success(res.msg);
-    //   }
-    // } catch (e) {
-    //   toast.error(e.message);
-    // }
-
+    try {
+      let res;
+      delete userInfo.key;
+      if (isActionCreate) {
+        delete userInfo.id;
+        res = await userApi.createUser(userInfo);
+      } else {
+        res = await userApi.updateUser(userInfo);
+      }
+      await getUserList();
+      toast.success(res.msg);
+      onCancel();
+    } catch (e) {
+      toast.error(e.message);
+    }
   };
 
+  const handleAllCodeListData = (listData) => {
+    return listData.length > 0
+      ? listData.map((data) => ({
+          label: data.value,
+          value: data.keyMap
+        }))
+      : [];
+  };
 
-  const handleListData = (listData) => {
-    return listData.length > 0 ? listData.map(data => ({
-      label: data.value,
-      value: data.keyMap
-    })) : []
-  }
-
-  const handleStreetDataList = (streetList, name) => {
-    return streetList.length > 0 ? streetList.map(street => ({
-      label: street[`${name === 'Ward' ? 'Ward' : name}Name`],
-      value: street[`${name === 'Ward' ? 'WardCode' : name+'ID'}`]
-    })) : []
-  }
-
+  const handleStreetListData = (streetList, name) => {
+    return streetList?.length > 0
+      ? streetList.map((street) => ({
+          label: street[`${name === "Ward" ? "Ward" : name}Name`],
+          value: +street[`${name === "Ward" ? "WardCode" : name + "ID"}`]
+        }))
+      : [];
+  };
 
   return (
     <Modal
-      className="user-manage-modal"
-      title={action === crudConstant.CREATE ? "Thêm mới người dùng" : "Thông tin người dùng"}
+      className='user-manage-modal'
+      title={action === CREATE ? "Thêm mới người dùng" : "Sửa thông tin người dùng"}
       footer={null}
       width={900}
-      onCancel={handleCancel}
-      visible={isVisible}
+      onCancel={onCancel}
+      visible={isOpen}
       // style={{ height: 'calc(100vh - 100px)' }}
       // bodyStyle={{ overflowY: 'scroll' }}
     >
-      <form className="form" onSubmit={handleSubmit(handleSubmitForm)}>
-        <div className="form-body">
-          <div className="form-body-item left">
-            <InputField
-              control={control}
-              errors={errors}
-              name="email"
-              placeholder="Email"
-              label="Email"
-            />
-            <InputField
-              control={control}
-              errors={errors}
-              name="password"
-              placeholder="Mật khẩu"
-              label="Mật khẩu"
-            />
-            <InputField
-              control={control}
-              errors={errors}
-              name="confirmPassword"
-              placeholder="Nhập lại mật khẩu"
-              label="Nhập lại mật khẩu"
-            />
-            <InputField
-              control={control}
-              errors={errors}
-              name="name"
-              placeholder="Họ và tên"
-              label="Họ và tên"
-            />
-            <CheckboxField
-              control={control}
-              errors={errors}
-              name="gender"
-              label="Giới tính"
-              options={handleListData(genderList)}
-            />
-            <InputField
-              control={control}
-              errors={errors}
-              name="phone"
-              placeholder="Số điện thoại"
-              label="Số điện thoại"
-            />
-            <CheckboxField
-              control={control}
-              errors={errors}
-              name="role"
-              label="Vai trò"
-              options={handleListData(roleList)}
-            />
+      {
+        <form className='form' onSubmit={handleSubmit(onSubmitForm)}>
+          <div className='form-body'>
+            <div className='form-body-item left'>
+              {[
+                { type: "input", name: "email", label: "Email", placeholder: "Email", disabled },
+                { type: "input", name: "password", label: "Mật khẩu", placeholder: "Mật khẩu", disabled },
+                {
+                  type: "input",
+                  name: "confirmPassword",
+                  label: "Xác nhận lại mật khẩu",
+                  placeholder: "Xác nhận lại mật khẩu",
+                  disabled
+                },
+                { type: "input", name: "name", label: "Họ và tên", placeholder: "Họ và tên" },
+                {
+                  type: "checkbox",
+                  name: "gender",
+                  label: "Giới tính",
+                  options: handleAllCodeListData(allCode.genderList)
+                },
+                { type: "input", name: "phone", label: "Số điện thoại", placeholder: "Số điện thoại" },
+                { type: "checkbox", name: "role", label: "Vai trò", options: handleAllCodeListData(allCode.roleList) }
+              ].map((item, index) =>
+                item.type === "input" ? (
+                  <InputField
+                    key={index}
+                    control={control}
+                    errors={errors}
+                    name={!item.disabled ? item.name : undefined}
+                    label={item.label}
+                    placeholder={item.placeholder}
+                    disabled={item.disabled}
+                  />
+                ) : (
+                  <CheckboxField
+                    key={index}
+                    control={control}
+                    errors={errors}
+                    name={item.name}
+                    label={item.label}
+                    options={item.options}
+                  />
+                )
+              )}
+            </div>
+            <div className='form-body-item right'>
+              <SelectField
+                control={control}
+                errors={errors}
+                getValues={getValues}
+                invisibleError='email'
+                name='provinceId'
+                label='Tỉnh / Thành phố'
+                options={handleStreetListData(provinceList, "Province")}
+                onChangeAddress={onChangeAddress}
+              />
+              <SelectField
+                control={control}
+                errors={errors}
+                invisibleError='password'
+                name='districtId'
+                label='Quận / Huyện'
+                options={handleStreetListData(districtList, "District")}
+                onChangeAddress={onChangeAddress}
+              />
+              <SelectField
+                control={control}
+                errors={errors}
+                invisibleError='confirmPassword'
+                name='wardId'
+                label='Phường / Xã'
+                options={handleStreetListData(wardList, "Ward")}
+              />
+
+              <UploadImageField
+                control={control}
+                watch={watch}
+                getValues={getValues}
+                nameId='imageId'
+                nameUrl='imageUrl'
+                label='Tải hình ảnh'
+                onUploadImage={onUploadImage}
+                onDestroyImage={onDestroyImage}
+                loadImage={loadImage}
+              />
+            </div>
           </div>
-          <div className="form-body-item right">
-            <SelectField
-              control={control}
-              errors={errors}
-              errorInvisible="email"
-              name="provinceId"
-              label="Tỉnh / Thành phố"
-              options={handleStreetDataList(provinceList, 'Province')}
-            />
-            <SelectField
-              control={control}
-              errors={errors}
-              errorInvisible="password"
-              name="districtId"
-              label="Quận / Huyện"
-              options={handleStreetDataList(districtList, 'District')}
-
-            />
-            <SelectField
-              control={control}
-              errors={errors}
-              errorInvisible="confirmPassword"
-              name="wardId"
-              label="Phường / Xã"
-              options={handleStreetDataList(wardList, 'Ward')}
-            />
-
-            <UploadImageField
-              control={control}
-              name="image"
-              label="Tải hình ảnh"
-              handleUploadImage={handleUploadImage}
-              handleDestroyImage={handleDestroyImage}
-              image={image}
-            />
-
+          <div className='form-buttons'>
+            <span
+              style={{
+                width: 120,
+                display: "inline-block",
+                backgroundColor: "#cccccc"
+              }}
+              onClick={() => {
+                console.log("userList", userList);
+              }}
+            >
+              check state
+            </span>
+            <button className='ant-btn cancel' onClick={onCancel}>
+              <span>Hủy</span>
+            </button>
+            <button type='submit' className='ant-btn ant-btn-primary submit'>
+              <span>Xác nhận</span>
+            </button>
           </div>
-        </div>
-
-        <div className="form-buttons">
-          <button className="ant-btn cancel" onClick={handleCancel}><span>Hủy</span></button>
-          <button type="submit" className="ant-btn ant-btn-primary submit"><span>Xác nhận</span></button>
-        </div>
-      </form>
+        </form>
+      }
     </Modal>
   );
 }

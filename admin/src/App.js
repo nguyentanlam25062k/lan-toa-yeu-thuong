@@ -1,24 +1,31 @@
-import './App.scss';
-import Header from "./containers/client/Header/Header";
-import {Routes, Route, Link} from "react-router-dom";
-import Home from "./containers/client/home/Home";
-import Client from "./routes/Client.route";
-import Admin from "./routes/Admin.route";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.scss";
+import ProductCategoryManage from "./containers/admin/ProductCategoryManage/ProductCategoryManage.js";
+import Layout from "./containers/admin/Layout/Layout.js";
+import UserManage from "./containers/admin/UserManage/UserManage.js";
+
 function App() {
   return (
-    <div className="app">
-      <Routes>
-        <Route path="/admin/*" element={<Admin/>}/>
-        <Route path="/*" element={<Client/>}/>
-      </Routes>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-      />
+    <div className='app'>
+      <div className='wrapper'>
+        <Layout>
+          <Routes>
+            <Route path='/quan-li-nguoi-dung' element={<UserManage />} />
+            <Route path='/quan-li-danh-muc' element={<ProductCategoryManage />} />
+            <Route path='/*' element={<UserManage />} />
+          </Routes>
+        </Layout>
+      </div>
+      {/*<Routes>*/}
+      {/*  <Route path="/admin/quan-li-nguoi-dung" element={<Admin/>}/>*/}
+      {/*  <Route path="/admin/*" element={<Admin/>}/>*/}
+      {/*  <Route path="/*" element={<Client/>}/>*/}
+      {/*</Routes>*/}
+      <ToastContainer position='bottom-right' autoClose={3000} />
     </div>
   );
 }

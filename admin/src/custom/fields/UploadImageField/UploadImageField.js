@@ -7,7 +7,7 @@ import {AiOutlinePlus, AiOutlineLoading, AiOutlineClose} from "react-icons/ai";
 
 UploadImageField.propTypes = {
   control: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
+  // name: PropTypes.string.isRequired,
 
   label: PropTypes.string,
   placeholder: PropTypes.string,
@@ -25,10 +25,11 @@ UploadImageField.defaultProps = {
 
 function UploadImageField(props) {
 
-  const {control, label, name, handleUploadImage, handleDestroyImage,
-    image: {isUpload, isLoading, imageUrl}
+  const {getValues, label, name, onUploadImage, onDestroyImage,
+    loadImage: {isUpload, isLoading}
   } = props;
-  const {field} = useController({control, name});
+  const {imageUrl} = getValues();
+
   return (
     <div className="form-group">
       {label && <label htmlFor={name}>{label}</label>}
@@ -42,7 +43,7 @@ function UploadImageField(props) {
                 <div className="wrap-image">
                   <AiOutlineClose
                     className="close"
-                    onClick={handleDestroyImage}
+                    onClick={onDestroyImage}
                   />
                   <Image
                     src={imageUrl}
@@ -54,7 +55,7 @@ function UploadImageField(props) {
             <>
               <input
                 type="file"
-                onChange={field.onChange(handleUploadImage)}
+                onChange={e => onUploadImage(e)}
               />
               <AiOutlinePlus className="icon"/>
               <div className="title">Upload</div>

@@ -27,13 +27,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       provinceId: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       districtId: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       wardId: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       imageId: {
         type: Sequelize.STRING

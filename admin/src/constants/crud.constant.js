@@ -1,8 +1,4 @@
-const crudConstant = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-  READ: 'READ',
-}
-
-export default crudConstant;
+export const CREATE = "CREATE";
+export const UPDATE = "UPDATE";
+export const DELETE = "DELETE";
+export const READ = "READ";

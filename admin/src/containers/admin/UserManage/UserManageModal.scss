@@ -144,6 +144,9 @@
             box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
           }
         }
+        &__menu {
+          z-index: 3;
+        }
         &__value-container {
           margin-top: -6px;
         }

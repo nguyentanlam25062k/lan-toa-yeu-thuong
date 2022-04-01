@@ -1,13 +1,50 @@
-
 .user-manage-table {
   margin: 20px 0;
+
   .action-button {
-    color: #fff;
+    color      : #fff;
+    display    : flex;
+    align-items: center;
+
+    >div:last-child {
+      margin-left: 5px;
+    }
+
     &.edit {
       background-color: #ffc107;
     }
+
     &.delete {
       background-color: #dc3545;
+    }
+  }
+
+  .ant-image-img {
+    width     : 60px;
+    height    : 60px;
+    object-fit: cover;
+  }
+
+  .table-title {
+    display    : flex;
+    align-items: center;
+
+    .button {
+      display       : flex;
+      flex-direction: column;
+      margin-left   : 5px;
+
+      >svg {
+        // padding   : 2px;
+        transition: all .2s;
+        font-size : 18px;
+        color     : rgba(#000, .5);
+        cursor    : pointer;
+
+        &.active {
+          color: #1890ff;
+        }
+      }
     }
   }
 }

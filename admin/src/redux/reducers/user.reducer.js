@@ -1,35 +1,35 @@
-import userActionConstant from "../../constants/user-action.constant";
+import { GET_USER_START, GET_USER_SUCCESS, GET_USER_FAIL } from "../../constants/user-action.constant";
 
 const initState = {
   userList: [],
-  pagination:{
+  pagination: {
     page: 1,
     limit: 5,
     totalRows: 50
   },
-  isLoading: false,
-}
+  isLoading: false
+};
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case userActionConstant.GET_USER_START:
+    case GET_USER_START:
       return {
         ...state,
         isLoading: true
       };
-    case userActionConstant.GET_USER_SUCCESS:
-      const {rows, pagination} = action.data;
+    case GET_USER_SUCCESS:
+      const { rows, pagination } = action.data;
       return {
         ...state,
         isLoading: false,
         userList: rows,
         pagination: pagination
       };
-    case userActionConstant.GET_USER_FAIL:
+    case GET_USER_FAIL:
       return {
         ...state,
         isLoading: false,
-        userList: [],
+        userList: []
       };
 
     default:

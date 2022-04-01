@@ -1,22 +1,24 @@
-const {Op} = require("sequelize");
-import db from '../models/index';
-import userSchema from "../validators/user.validator";
-import {hashPassword, comparePassword, APIFeatures} from "../helpers/index.helper";
+const { Op } = require("sequelize");
+import db from "../models/index";
+import { userSchema } from "../schemas/index.schema";
+// import { hashPassword, comparePassword } from "../helpers/index.helper";
+import { hashPassword, comparePassword } from "../utils/index.util";
 import _ from "lodash";
 import config from "../config/index.config";
+import { APIFeatures } from "../utils/index.util";
 
 const userService = {};
 
 userService.login = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const {value, error} = userSchema.signIn.validate(data);
-      const {email, password} = value;
+      const { value, error } = userSchema.signIn.validate(data);
+      const { email, password } = value;
       if (!error) {
         const user = await db.User.findOne({
-          where: {email},
-          attributes: ['firstName', 'lastName', 'email', 'password', 'role']
-        })
+          where: { email },
+          attributes: ["firstName", "lastName", "email", "password", "role"]
+        });
         if (user) {
           const validPassword = await comparePassword(password, user.password);
           delete user.password;
@@ -31,40 +33,39 @@ userService.login = (data) => {
             resolve({
               code: 3,
               msg: "Incorrect password !"
-            })
+            });
           }
         } else {
           resolve({
             code: 2,
             msg: "User doesn't exist !"
-          })
+          });
         }
       } else {
         resolve({
           code: 1,
           msg: error.details
-        })
+        });
       }
     } catch (error) {
       reject({
         code: -1,
-        msg: 'Error from server'
+        msg: "Error from server"
       });
     }
-  })
-}
+  });
+};
 
 userService.createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-
-      const {value, error} = userSchema.createUser.validate(data);
+      const { value, error } = userSchema.createUser.validate(data);
       if (!error) {
-        const {name, email, password, gender, phone, districtId, provinceId, wardId} = value;
-        const {imageId, imageUrl} = data;
+        const { name, email, password, gender, phone, districtId, provinceId, wardId } = value;
+        const { imageId, imageUrl } = data;
         const user = await db.User.findOne({
-          where: {email}
-        })
+          where: { email }
+        });
         if (!user) {
           const hashPasswordUser = await hashPassword(password);
           const infoUser = await db.User.create({
@@ -78,7 +79,7 @@ userService.createNewUser = (data) => {
             wardId: wardId,
             imageId: imageId,
             imageUrl: imageUrl,
-            role: 'R3'
+            role: "R3"
           });
           resolve({
             code: 0,
@@ -90,114 +91,63 @@ userService.createNewUser = (data) => {
           resolve({
             code: 2,
             msg: "Your email is already in used, Pleas try another email !"
-          })
+          });
         }
       } else {
         resolve({
           code: 1,
           msg: error.details[0].message
-        })
+        });
       }
     } catch (e) {
-      console.log(e)
+      console.log(e);
       reject({
         code: -1,
-        msg: 'Error from server'
+        msg: "Error from server"
       });
     }
-  })
-}
+  });
+};
 
-userService.getUser = (data) => {
+userService.getUser = (queryString) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let user, order;
-      let {id, page, limit, offset, sort, search} = data;
-      // pagination
-      page = Number(data.page) || config.DEFAULT_PAGE;
-      limit = Number(data.limit) || config.DEFAULT_LIMIT_PAGE;
-      offset = limit * (page - 1);
-      // sort
-      sort = data.sort || config.DEFAULT_SORT_FIELD;
-      order = sort.includes('-') ? [[sort.replace('-', ''), 'DESC']] : [[sort, 'ASC']];
-      // search
-      search = data.search;
-      // filter
-      const queryObj = {...data};
-      const excludeField = ['page', 'limit', 'sort', 'search'];
-      excludeField.forEach(el => delete queryObj[el]);
-      const firstKeyQuery = Object.keys(queryObj)[0];
-
-      const options = {where: {}, limit, offset, order};
-
-      if (typeof queryObj[firstKeyQuery] === 'object') {
-        console.log('filter ===============')
-        for (const key in queryObj[firstKeyQuery]) {
-          queryObj[firstKeyQuery] = {[Op[key]]: Number(queryObj[firstKeyQuery][key])}
-          options.where = queryObj;
-          user = await db.User.findAndCountAll(options);
-
+      let { query } = new APIFeatures(queryString).pagination().sort().filter().search().where();
+      query = {
+        ...query,
+        attributes: {
+          exclude: ["password"]
         }
-      }
-
-      if (id === undefined) {
-        console.log('all ===============')
-        user = await db.User.findAndCountAll(options);
-      }
-      if (id && (typeof queryObj[firstKeyQuery] !== 'object')) {
-        console.log('id ===============')
-        user = await db.User.findOne({where: {id}});
-      }
-
-      if (search) {
-        console.log('search ===============')
-        options.where.email = {[Op.like]: `%${search}%`};
-        user = await db.User.findAndCountAll(options);
-      }
-
-      if (user) {
-
-        const resultUser = {...user};
-        if(user.rows) {
-          // delete Object.assign(resultUser, user, {['totalRows']: user['count'] })['count'];
-          resultUser.pagination = {page, limit, totalRows: user.count};
-          delete resultUser.count;
-        }
-        resolve({
-          code: 0,
-          msg: `Get user success !`,
-          body: user.rows ? resultUser : user
-        })
-      } else {
-        resolve({
-          code: 1,
-          msg: `Can't not found user !`
-        })
-      }
+      };
+      const users = await db.User.findAndCountAll(query);
+      resolve({
+        code: 0,
+        msg: `Get user success !`,
+        body: users
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       reject({
         code: -1,
-        msg: 'Error from server !'
+        msg: "Error from server !"
       });
     }
-  })
-}
+  });
+};
 
 userService.updateUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const {value, error} = userSchema.createUser.validate(data);
+      const { value, error } = userSchema.updateUser.validate(data);
       if (!error) {
-        const {firstName, lastName, gender, phone, districtId, provinceId, wardId, role} = value;
-        const {imageId, imageUrl, id} = data;
+        const { name, gender, phone, districtId, provinceId, wardId, role } = value;
+        const { imageId, imageUrl, id } = data;
         const user = await db.User.findOne({
-          where: {id},
+          where: { id },
           raw: false
         });
         if (user) {
-          user.firstName = firstName;
-          user.lastName = lastName;
+          user.name = name;
           user.gender = gender;
           user.phone = phone;
           user.districtId = districtId;
@@ -209,55 +159,62 @@ userService.updateUser = (data) => {
           await user.save();
           resolve({
             code: 0,
-            msg: "Update user success !",
+            msg: "Update user success !"
           });
         } else {
           resolve({
             code: 2,
             msg: "User doesn't exist !"
-          })
+          });
         }
       } else {
         resolve({
           code: 1,
           msg: error.details[0].message
-        })
+        });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       reject({
         code: -1,
-        msg: 'Error form server'
+        msg: "Error form server"
       });
     }
-  })
-}
+  });
+};
 
 userService.deleteUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const {id} = data;
-      const user = await db.User.findOne({where: {id}})
-      if (user) {
-        await db.User.destroy({where: {id}})
-        resolve({
-          code: 0,
-          msg: "Delete user success !"
-        })
+      const { id } = data;
+      if (id) {
+        const user = await db.User.findOne({ where: { id: +id } });
+        if (user) {
+          await db.User.destroy({ where: { id: +id } });
+          resolve({
+            code: 0,
+            msg: "Delete user success !"
+          });
+        } else {
+          resolve({
+            code: 2,
+            msg: "User doesn't exist !"
+          });
+        }
       } else {
         resolve({
           code: 1,
-          msg: "User doesn't exist !"
-        })
+          msg: "Vui lòng gửi id người dùng muốn xóa !"
+        });
       }
-    } catch (error) {
+    } catch (e) {
+      console.log(e);
       reject({
         code: -1,
-        msg: 'Error form server'
+        msg: "Error form server"
       });
     }
-  })
-}
-
+  });
+};
 
 export default userService;

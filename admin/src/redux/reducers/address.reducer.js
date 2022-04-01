@@ -1,4 +1,23 @@
-import addressActionConstant from "../../constants/address-action.constant";
+import {
+  GET_PROVINCE_START,
+  GET_PROVINCE_SUCCESS,
+  GET_PROVINCE_FAIL,
+  GET_DISTRICT_START,
+  GET_DISTRICT_SUCCESS,
+  GET_DISTRICT_FAIL,
+  GET_WARD_START,
+  GET_WARD_SUCCESS,
+  GET_WARD_FAIL,
+  SET_PROVINCE_SELECTED_START,
+  SET_PROVINCE_SELECTED_SUCCESS,
+  SET_PROVINCE_SELECTED_FAIL,
+  SET_DISTRICT_SELECTED_START,
+  SET_DISTRICT_SELECTED_SUCCESS,
+  SET_DISTRICT_SELECTED_FAIL,
+  SET_WARD_SELECTED_START,
+  SET_WARD_SELECTED_SUCCESS,
+  SET_WARD_SELECTED_FAIL
+} from "../../constants/address-action.constant";
 
 const initState = {
   provinceList: [],
@@ -7,114 +26,114 @@ const initState = {
   // provinceSelectedId: 202,
   // districtSelectedId: 3695,
   // wardSelectedId: 90768,
-  isLoading: false,
-}
+  isLoading: false
+};
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case addressActionConstant.GET_PROVINCE_START:
+    case GET_PROVINCE_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.GET_PROVINCE_SUCCESS:
+    case GET_PROVINCE_SUCCESS:
       return {
         ...state,
         provinceList: [...action.provinceList],
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.GET_PROVINCE_FAIL:
+    case GET_PROVINCE_FAIL:
       return {
         ...state,
         provinceList: [],
-        isLoading: false,
-      }
-    case addressActionConstant.GET_DISTRICT_START:
+        isLoading: false
+      };
+    case GET_DISTRICT_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.GET_DISTRICT_SUCCESS:
+    case GET_DISTRICT_SUCCESS:
       return {
         ...state,
         districtList: [...action.districtList],
         // provinceSelectedId: action.provinceSelectedId,
         // districtSelectedId: action.districtSelectedId,
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.GET_DISTRICT_FAIL:
+    case GET_DISTRICT_FAIL:
       return {
         ...state,
         districtList: [],
-        isLoading: false,
-      }
-    case addressActionConstant.GET_WARD_START:
+        isLoading: false
+      };
+    case GET_WARD_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.GET_WARD_SUCCESS:
+    case GET_WARD_SUCCESS:
       return {
         ...state,
         wardList: [...action.wardList],
         // districtSelectedId: action.districtSelectedId,
         // wardSelectedId: action.wardSelectedId,
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.GET_WARD_FAIL:
+    case GET_WARD_FAIL:
       return {
         ...state,
         wardList: [],
-        isLoading: false,
-      }
-    case addressActionConstant.SET_PROVINCE_SELECTED_START:
+        isLoading: false
+      };
+    case SET_PROVINCE_SELECTED_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.SET_PROVINCE_SELECTED_SUCCESS:
+    case SET_PROVINCE_SELECTED_SUCCESS:
       return {
         ...state,
         provinceSelectedId: action.provinceSelectedId,
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.SET_PROVINCE_SELECTED_FAIL:
+    case SET_PROVINCE_SELECTED_FAIL:
       return {
         ...state,
-        isLoading: false,
-      }
-    case addressActionConstant.SET_DISTRICT_SELECTED_START:
+        isLoading: false
+      };
+    case SET_DISTRICT_SELECTED_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.SET_DISTRICT_SELECTED_SUCCESS:
+    case SET_DISTRICT_SELECTED_SUCCESS:
       return {
         ...state,
         districtSelectedId: action.districtSelectedId,
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.SET_DISTRICT_SELECTED_FAIL:
+    case SET_DISTRICT_SELECTED_FAIL:
       return {
         ...state,
-        isLoading: false,
-      }
-    case addressActionConstant.SET_WARD_SELECTED_START:
+        isLoading: false
+      };
+    case SET_WARD_SELECTED_START:
       return {
         ...state,
         isLoading: true
       };
-    case addressActionConstant.SET_WARD_SELECTED_SUCCESS:
+    case SET_WARD_SELECTED_SUCCESS:
       return {
         ...state,
         wardSelectedId: action.wardSelectedId,
-        isLoading: false,
+        isLoading: false
       };
-    case addressActionConstant.SET_WARD_SELECTED_FAIL:
+    case SET_WARD_SELECTED_FAIL:
       return {
         ...state,
-        isLoading: false,
-      }
+        isLoading: false
+      };
 
     default:
       return state;

@@ -20,14 +20,14 @@ const email = Joi
     "string.empty": `Vui lòng không để trống email`,
   })
 
-const passwordCurrent = Joi
+const currentPassword = Joi
   .string()
   .required()
   .min(6)
   .max(20)
   .messages({
     "string.base": `Kiểu dữ liệu của mật khẩu phải là string`,
-    "any.required": `Vui lòng điền mật khẩu`,
+    "any.required": `Vui lòng điền mật khẩu hiện tại`,
     "string.empty": `Vui lòng không để trống mật khẩu`,
     "string.min": `Mật khẩu tối thiểu {#limit} ký tự`,
     "string.max": `Mật khẩu tối đa {#limit} ký tự`,
@@ -46,7 +46,7 @@ const password = Joi
     "string.max": `Mật khẩu tối đa {#limit} ký tự`,
   })
 
-const passwordConfirm = Joi
+const confirmPassword = Joi
   .string()
   .required()
   .min(6)
@@ -130,13 +130,15 @@ const role = Joi
 
 const imageId = Joi
   .string()
+  .allow(null)
   .messages({
-    "string.base": `Kiểu dữ liệu của id ảnh đại diện phải là string`,
+    "string.base": `Kiểu dữ liệu của ảnh đại diện phải là string`,
     "string.empty": `Vui lòng điền id ảnh đại diện`,
   })
 
 const imageUrl = Joi
   .string()
+  .allow(null)
   .messages({
     "string.base": `Kiểu dữ liệu của url ảnh đại diện phải là string`,
     "string.empty": `Vui lòng không để trống url ảnh đại diện`,
@@ -145,9 +147,9 @@ const imageUrl = Joi
 const initUserSchema = {
   id: id,
   email: email,
-  passwordCurrent: passwordCurrent,
+  currentPassword: currentPassword,
   password: password,
-  passwordConfirm: passwordConfirm,
+  confirmPassword: confirmPassword,
   name: name,
   gender: gender,
   phone: phone,
@@ -162,12 +164,13 @@ const initUserSchema = {
 const userSchema = {};
 
 const initCreateUserSchema = {...initUserSchema};
-delete initCreateUserSchema.id;
-delete initCreateUserSchema.passwordCurrent;
+['id', 'currentPassword'].forEach(e => delete initCreateUserSchema[e]);
+
 userSchema.createUser = Joi.object().keys({...initCreateUserSchema});
 
 const initUpdateUserSchema = {...initUserSchema};
-delete initUpdateUserSchema.email;
+['email', 'password', 'currentPassword', 'confirmPassword'].map(e => delete initUpdateUserSchema[e]);
+
 userSchema.updateUser = Joi.object().keys({...initUpdateUserSchema});
 
 userSchema.signIn = Joi.object({
@@ -181,4 +184,4 @@ userSchema.signIn = Joi.object({
     .required()
 });
 
-export default userSchema;
+export {userSchema};

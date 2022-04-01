@@ -1,46 +1,53 @@
-import allCodeActionConstant from '../../constants/all-code.constant';
+import {
+  GET_ROLE_SUCCESS,
+  GET_ROLE_FAIL,
+  GET_ROLE_START,
+  GET_GENDER_SUCCESS,
+  GET_GENDER_FAIL,
+  GET_GENDER_START
+} from "../../constants/index.constant";
 
 const initState = {
   roleList: [],
   genderList: [],
-  isLoading: false,
-}
+  isLoading: false
+};
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case allCodeActionConstant.GET_ROLE_START:
+    case GET_ROLE_START:
       return {
         ...state,
         isLoading: true
       };
-    case allCodeActionConstant.GET_ROLE_SUCCESS:
+    case GET_ROLE_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        roleList: action.roleList,
+        roleList: action.roleList
       };
-    case allCodeActionConstant.GET_ROLE_FAIL:
+    case GET_ROLE_FAIL:
       return {
         ...state,
         isLoading: false,
-        roleList: [],
+        roleList: []
       };
-    case allCodeActionConstant.GET_GENDER_START:
+    case GET_GENDER_START:
       return {
         ...state,
         isLoading: true
       };
-    case allCodeActionConstant.GET_GENDER_SUCCESS:
+    case GET_GENDER_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        genderList: action.genderList,
+        genderList: action.genderList
       };
-    case allCodeActionConstant.GET_GENDER_FAIL:
+    case GET_GENDER_FAIL:
       return {
         ...state,
         isLoading: false,
-        genderList: [],
+        genderList: []
       };
     default:
       return state;

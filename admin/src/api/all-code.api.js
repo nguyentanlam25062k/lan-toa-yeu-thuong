@@ -1,9 +1,9 @@
-import {axios} from "../utils/axios";
+import { axios } from "../utils";
 
 const allCodeApi = {};
 
 allCodeApi.getAllCode = (field) => {
   return axios.get(`/get-all-code?type=${field}`);
-}
+};
 
-export default allCodeApi;
+export { allCodeApi };

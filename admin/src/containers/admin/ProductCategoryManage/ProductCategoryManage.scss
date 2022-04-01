@@ -1,0 +1,24 @@
+.product-category-manage {
+    display         : flex;
+    justify-content : space-between;
+    background-color: #fff;
+
+    >div:nth-child(n) {
+        width: 50%;
+    }
+
+    >.btn {
+        .button {
+            color: #fff;
+
+            &.edit {
+                background-color: #ffc107;
+            }
+
+            &.delete {
+                background-color: #dc3545;
+            }
+        }
+
+    }
+}

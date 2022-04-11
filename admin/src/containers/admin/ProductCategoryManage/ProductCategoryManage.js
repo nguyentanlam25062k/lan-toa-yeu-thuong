@@ -10,205 +10,167 @@ import Content from "../Layout/Content.js";
 import "./ProductCategoryManage.scss";
 import ProductCategoryManageModal from "./ProductCategoryManageModal.js";
 
+const initInputList = [{ name: "hom nay tao vui", parentId: 4 }];
+
 function ProductCategoryManage(props) {
-  console.log("re-render");
-  const [modal, setModal] = useState({ isOpen: true, action: CREATE });
+    const [modal, setModal] = useState({ isOpen: false, action: CREATE });
 
-  const [checkedKeys, setCheckedKeys] = useState([]);
-  const [checkedKeyList, setCheckedKeyList] = useState([""]);
-  const [selectedList, setSelectedList] = useState([""]);
-  const [categoryProductList, setCategoryProductList] = useState([]);
+    const [checkedKeys, setCheckedKeys] = useState([]);
+    const [inputList, setInputList] = useState([]);
 
-  const [isButtonSubmitClick, setIsButtonSubmitClick] = useState(false);
+    const [categoryProductList, setCategoryProductList] = useState([]);
+    const [categoryProductTree, setCategoryProductTree] = useState(null);
 
-  const [errorInput, setErrorInput] = useState({ isError: false, msg: [] });
+    const isActionCreate = modal.action === CREATE;
+    useEffect(() => {
+        getCategory();
+    }, []);
 
-  const isActionCreate = modal.action === CREATE;
+    useEffect(() => {
+        const categoryProductTree = createCategoryTree(categoryProductList);
+        setCategoryProductTree(categoryProductTree);
+    }, [categoryProductList]);
 
-  useEffect(() => {
     const getCategory = async () => {
-      try {
-        const { body } = await productCategoryApi.getProductCategory();
-        if (body?.length > 0) {
-          setCategoryProductList(body);
+        try {
+            const { body } = await productCategoryApi.getProductCategory();
+            if (body?.length > 0) {
+                setCategoryProductList(body);
+            }
+        } catch (e) {
+            toast.error(e.message);
         }
-      } catch (e) {
-        toast.error(e.message);
-      }
     };
-    getCategory();
-  }, []);
 
-  const createCategoryTree = (categories, parentId = null) => {
-    const categoryTree = [];
-    const category = categories.filter((cat) => cat.parentId === parentId);
+    const createCategoryTree = (categories, parentId = null) => {
+        const categoryTree = [];
+        const category = categories.filter((cat) => cat.parentId === parentId);
 
-    for (let cate of category) {
-      categoryTree.push({
-        ...cate,
-        title: cate.name,
-        key: cate.id,
-        children: createCategoryTree(categories, cate.id)
-      });
-    }
+        for (let cate of category) {
+            categoryTree.push({
+                ...cate,
+                title: `${cate.name} - id(${cate.id})`,
+                key: cate.id,
+                children: createCategoryTree(categories, cate.id)
+            });
+        }
 
-    return categoryTree;
-  };
+        return categoryTree;
+    };
 
-  const createCategoryList = (categories, options = []) => {
-    for (let category of categories) {
-      options.push({
-        value: category.id,
-        name: category.name,
-        parentId: category.parentId
-      });
-      if (category.children.length > 0) {
-        createCategoryList(category.children, options);
-      }
-    }
-    return options;
-  };
+    const createCategoryList = (categories, options = []) => {
+        for (let category of categories) {
+            options.push({
+                value: category.id,
+                name: category.name,
+                parentId: category.parentId
+            });
+            if (category.children.length > 0) {
+                createCategoryList(category.children, options);
+            }
+        }
+        return options;
+    };
 
-  const onCheck = (checkedKeysValue) => {
-    setCheckedKeys(checkedKeysValue);
-    handleCheckedKeyList(checkedKeysValue);
-  };
+    const onCheck = (checkedKeysValue) => {
+        setCheckedKeys(checkedKeysValue);
+        handleCheckedKeyList(checkedKeysValue);
+    };
 
-  const handleCheckedKeyList = (checkedKeysValue) => {
-    const checkedArr = [];
-    checkedKeysValue?.length > 0 &&
-      checkedKeysValue.forEach((categoryId) => {
-        const category = categoryProductList.find((item) => item.id === categoryId);
-        checkedArr.push(category);
-      });
-    const selectedArr = checkedArr.map((item) => ({ name: item.name, value: item.id }));
+    const handleCheckedKeyList = (checkedKeysValue) => {
+        const checkedArr = [];
+        checkedKeysValue?.length > 0 &&
+            checkedKeysValue.forEach((categoryId) => {
+                const category = categoryProductList.find((item) => item.id === categoryId);
+                checkedArr.push(category);
+            });
+        // const selectedArr = checkedArr.map((item) => ({ name: item.name, value: item.id }));
 
-    setCheckedKeyList(checkedArr);
-    setSelectedList(selectedArr);
-  };
+        setInputList(checkedArr);
+    };
 
-  const handleInputChange = (value, index, key) => {
-    const checkedKeyListChange = checkedKeyList.map((item, _index) =>
-      _index === index ? { ...item, [key]: value } : item
-    );
+    const handleInputChange = (value, index, key) => {
+        const checkedKeyListChange = inputList.map((item, _index) =>
+            _index === index ? { ...item, [key]: value } : item
+        );
+        setInputList(checkedKeyListChange);
+    };
 
-    const { isValid, errorMsgList } = handleErrorForm(value, index);
-    console.log({ isValid, errorMsgList });
-    setErrorInput({ isError: isValid, msg: errorMsgList });
-    setCheckedKeyList(checkedKeyListChange);
-  };
-
-  const handleSelectChange = (value, name) => {
-    const selectedListChange = selectedList.map((item) => (item.name === name ? { ...item, value: value } : item));
-    setSelectedList(selectedListChange);
-  };
-
-  const handleOpenModal = async (action) => {
-    if (action === CREATE) {
-      setModal({ isOpen: true, action: CREATE });
-      setCheckedKeyList([""]);
-      setSelectedList([""]);
-    } else {
-      setModal({ isOpen: true, action: UPDATE });
-    }
-  };
-
-  const handleCancel = () => {
-    setModal({ ...modal, isOpen: false });
-    setCheckedKeys([]);
-    setCheckedKeyList([]);
-    setSelectedList([]);
-  };
-
-  const handleErrorForm = (value, position) => {
-    let errorMsgList = [...errorInput.msg];
-    let result;
-    let isValid = true;
-
-    if (!value && !position) {
-      for (let i = 0; i < checkedKeyList.length; i++) {
-        if (!checkedKeyList[i].name) {
-          if (!errorMsgList.some((item) => item.position === i)) {
-            errorMsgList.push({ position: position, value: "Vui lòng điền tên danh mục" });
-          }
-          isValid = false;
+    const handleOpenModal = async (action) => {
+        if (action === CREATE) {
+            setModal({ isOpen: true, action: CREATE });
+            setInputList(initInputList);
         } else {
-          errorMsgList = errorMsgList.filter((item) => item.position !== position);
+            setModal({ isOpen: true, action: UPDATE });
         }
-      }
-    } else {
-      if (value === "") {
-        if (!errorMsgList.some((item) => item.position === position)) {
-          errorMsgList.push({ position: position, value: "Vui lòng điền tên danh mục" });
+    };
+
+    const handleCancel = () => {
+        setModal({ ...modal, isOpen: false });
+        setCheckedKeys([]);
+        setInputList(initInputList);
+    };
+
+    const handleDelete = () => {
+        console.log("checkedKeys", checkedKeys);
+        console.log("inputList", inputList);
+    };
+
+    const handleSubmitForm = async (e) => {
+        e.preventDefault();
+        try {
+            let res;
+            const inputData = inputList.map((item) => ({
+                id: item.id,
+                name: item.name,
+                parentId: item.parentId ? item.parentId : null
+            }));
+
+            if (isActionCreate) {
+                res = await productCategoryApi.createProductCategory(inputData[0]);
+            } else {
+                res = await productCategoryApi.updateProductCategory(inputData);
+            }
+            await getCategory();
+            toast.success(res.msg);
+            handleCancel();
+        } catch (e) {
+            toast.error(e.message);
         }
-      } else {
-        errorMsgList = errorMsgList.filter((item) => item.position !== position);
-      }
+    };
 
-      if (errorMsgList.length > 0) {
-        isValid = false;
-      }
-    }
+    return (
+        <Content>
+            <button onClick={() => {}}>log State</button>
+            <div className="product-category-manage">
+                <div className="tree">
+                    <Tree checkable checkedKeys={checkedKeys} treeData={categoryProductTree} onCheck={onCheck} />
+                </div>
 
-    if (isValid) {
-      result = {
-        isValid: true,
-        errorMsgList: []
-      };
-    } else {
-      result = {
-        isValid: false,
-        errorMsgList: errorMsgList
-      };
-    }
-    return result;
-  };
-
-  const handleSubmitForm = async (e) => {
-    e.preventDefault();
-    const { isValid, errorMsgList } = handleErrorForm();
-    setErrorInput({ isError: isValid, msg: errorMsgList });
-  };
-
-  const categoryProductTree = createCategoryTree(categoryProductList);
-
-  return (
-    <Content>
-      <button onClick={() => console.log("selectedList", selectedList)}>log State</button>
-      <div className='product-category-manage'>
-        <div className='tree'>
-          <Tree
-            checkable
-            checkedKeys={checkedKeys}
-            treeData={createCategoryTree(categoryProductList)}
-            onCheck={onCheck}
-          />
-        </div>
-        <div className='btn'>
-          <button className='ant-btn ant-btn-primary' onClick={() => handleOpenModal(CREATE)}>
-            Thêm
-          </button>
-          <button className='ant-btn button edit' onClick={() => handleOpenModal(UPDATE)}>
-            Sửa
-          </button>
-          <button className='ant-btn button delete'>Xóa</button>
-        </div>
-        <div className='modal'>
-          <ProductCategoryManageModal
-            modal={modal}
-            checkedKeyList={checkedKeyList}
-            selectedList={selectedList}
-            categoryProductTree={categoryProductTree}
-            errorInput={errorInput}
-            onCancel={handleCancel}
-            onInputChange={handleInputChange}
-            onSelectChange={handleSelectChange}
-            onSubmitForm={handleSubmitForm}
-          />
-        </div>
-      </div>
-    </Content>
-  );
+                <div className="btn">
+                    <button className="ant-btn ant-btn-primary" onClick={() => handleOpenModal(CREATE)}>
+                        Thêm
+                    </button>
+                    <button className="ant-btn button edit" onClick={() => handleOpenModal(UPDATE)}>
+                        Sửa
+                    </button>
+                    <button className="ant-btn button delete" onClick={() => handleDelete()}>
+                        Xóa
+                    </button>
+                </div>
+                <div className="modal">
+                    <ProductCategoryManageModal
+                        modal={modal}
+                        inputList={inputList}
+                        categoryProductTree={categoryProductTree}
+                        onCancel={handleCancel}
+                        onInputChange={handleInputChange}
+                        onSubmitForm={handleSubmitForm}
+                    />
+                </div>
+            </div>
+        </Content>
+    );
 }
 
 export default ProductCategoryManage;

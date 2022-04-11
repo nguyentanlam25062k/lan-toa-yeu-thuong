@@ -192,6 +192,7 @@ productCategoryService.updateProductCategory = (productCateList) => {
 productCategoryService.deleteProductCategory = (productCateList) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log("productCateList", productCateList);
             const productCateIdList = productCateList?.id;
             if (productCateIdList?.length > 0) {
                 const productCateList = await Promise.all(

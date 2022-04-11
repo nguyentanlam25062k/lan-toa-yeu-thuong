@@ -15,6 +15,7 @@ productCategoryApi.updateProductCategory = (infoCategory) => {
 };
 
 productCategoryApi.deleteProductCategory = (id) => {
+    console.log("id", id);
     return axios.delete(`/delete-product-category`, { data: { id: id } });
 };
 

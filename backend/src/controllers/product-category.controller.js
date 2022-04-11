@@ -32,7 +32,7 @@ productCategoryController.updateProductCategory = async (req, res) => {
 
 productCategoryController.deleteProductCategory = async (req, res) => {
     try {
-        const data = await productCategoryService.deleteProductCategory(req.query);
+        const data = await productCategoryService.deleteProductCategory(req.body);
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json(error);

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
-import { Tree } from "antd";
+import { Modal, Tree } from "antd";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -10,10 +10,13 @@ import Content from "../Layout/Content.js";
 import "./ProductCategoryManage.scss";
 import ProductCategoryManageModal from "./ProductCategoryManageModal.js";
 
-const initInputList = [{ name: "hom nay tao vui", parentId: 4 }];
+import { WarningOutlined } from "@ant-design/icons";
+// const initInputList {}= [{ name: "hom nay tao vui", parentId: 4 }];
+const initInputList = [{ name: "", parentId: null }];
 
 function ProductCategoryManage(props) {
     const [modal, setModal] = useState({ isOpen: false, action: CREATE });
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const [checkedKeys, setCheckedKeys] = useState([]);
     const [inputList, setInputList] = useState([]);
@@ -111,9 +114,28 @@ function ProductCategoryManage(props) {
         setInputList(initInputList);
     };
 
+    const handleModalDeleteOk = async () => {
+        try {
+            const idList = checkedKeys;
+            const res = await productCategoryApi.deleteProductCategory(idList);
+            await getCategory();
+            toast.success(res.msg);
+            setCheckedKeys([]);
+            setInputList(initInputList);
+            setIsModalVisible(false);
+        } catch (e) {
+            toast.error(e.message);
+        }
+    };
+
+    const handleModalDeleteCancel = () => {
+        setCheckedKeys([]);
+        setInputList(initInputList);
+        setIsModalVisible(false);
+    };
+
     const handleDelete = () => {
-        console.log("checkedKeys", checkedKeys);
-        console.log("inputList", inputList);
+        setIsModalVisible(true);
     };
 
     const handleSubmitForm = async (e) => {
@@ -134,6 +156,8 @@ function ProductCategoryManage(props) {
             await getCategory();
             toast.success(res.msg);
             handleCancel();
+            setCheckedKeys([]);
+            setInputList(initInputList);
         } catch (e) {
             toast.error(e.message);
         }
@@ -167,6 +191,25 @@ function ProductCategoryManage(props) {
                         onInputChange={handleInputChange}
                         onSubmitForm={handleSubmitForm}
                     />
+                </div>
+                <div className="modal-delete">
+                    <Modal
+                        title={
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <WarningOutlined style={{ color: "red" }} />
+                                <div style={{ marginLeft: "10px", fontSize: "16px" }}>
+                                    Bạn có chắc chắc muốn xóa danh mục ?
+                                </div>
+                            </div>
+                        }
+                        visible={isModalVisible}
+                        onOk={handleModalDeleteOk}
+                        onCancel={handleModalDeleteCancel}
+                    >
+                        <div style={{ fontSize: "16px" }}>
+                            Thao tác này có thế <strong>không khôi phục</strong> lại được !
+                        </div>
+                    </Modal>
                 </div>
             </div>
         </Content>

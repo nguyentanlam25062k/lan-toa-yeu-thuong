@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import db from "../models";
 import { convertToSlug, generateShortId } from "../utils/index.util";
 import { productCategorySchema } from "../schemas/index.schema";

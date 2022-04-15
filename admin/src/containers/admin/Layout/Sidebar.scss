@@ -1,0 +1,15 @@
+.nav.nav-pills.nav-sidebar {
+    .nav-item {
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(#fff, .3);
+        }
+
+        svg {
+            font-size: 18px;
+        }
+
+        svg {
+            margin-right: 10px;
+        }
+    }
+}

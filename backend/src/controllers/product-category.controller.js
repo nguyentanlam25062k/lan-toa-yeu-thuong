@@ -1,5 +1,4 @@
 import productCategoryService from "../services/product-category.service";
-import config from "../config/index.config";
 
 const productCategoryController = {};
 

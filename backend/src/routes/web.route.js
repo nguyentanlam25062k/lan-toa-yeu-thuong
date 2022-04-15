@@ -7,6 +7,8 @@ import uploadController from "../controllers/upload.controller";
 import userExtraInfoController from "../controllers/user-extra-info.controller";
 import allCodeController from "../controllers/all-code.controller";
 import productCategoryController from "../controllers/product-category.controller.js";
+import productBrandController from "../controllers/product-brand.controller.js";
+
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -29,6 +31,12 @@ let initWebRoutes = (app) => {
     router.post("/create-product-category", productCategoryController.createProductCategory);
     router.patch("/update-product-category", productCategoryController.updateProductCategory);
     router.delete("/delete-product-category", productCategoryController.deleteProductCategory);
+
+    router.get("/get-product-brand", productBrandController.getProductBrand);
+    router.post("/create-product-brand", productBrandController.createProductBrand);
+    router.patch("/update-product-brand", productBrandController.updateProductBrand);
+    router.delete("/delete-product-brand", productBrandController.deleteProductBrand);
+    router.patch("/update-active-product-brand", productBrandController.updateActiveProductBrand);
 
     // router.post('/create-category', uploadMulter.array('image'), validateImage );
 
